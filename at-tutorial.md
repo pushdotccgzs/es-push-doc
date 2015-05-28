@@ -1,5 +1,5 @@
 #使用AT固件
-- 下载AT固件](https://github.com/pushdotccgzs/es-push-doc/raw/master/at-push.zip)
+- 下载[AT固件](https://github.com/pushdotccgzs/es-push-doc/raw/master/at-push.zip)
 - 刷入板子
 - 开启调试控制台，按以下方式输入指令：
 ```
