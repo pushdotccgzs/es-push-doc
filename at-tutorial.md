@@ -1,43 +1,57 @@
 #使用AT固件
-- 下载[AT固件](https://github.com/pushdotccgzs/es-push-doc/raw/master/at-push.zip)
-- 刷入板子
+- 注册平台账号，前往[此处](http://211.155.86.145:8000/web/register/)注册账号并登入，点击“[设备类别](http://211.155.86.145:8000/web/apps/)”，并新增一个APP，记录新APP的APPID与APPKEY，稍后使用。
+- 按如下步骤，下载AT固件，自己编译或使用预编译的版本，并刷入板子
+
+```
+#使用以下命令编译AT固件
+git clone https://github.com/pushdotccgzs/espush_at.git
+cd espush_at
+make clean && make
+#或者直接使用bin目录下以预编译
+bin/eagle.flash.bin	0x00000
+bin/eagle.irom0text.bin	0x40000
+```
+
 - 开启调试控制台，按以下方式输入指令：
 ```
-//注解，以下以 「>」开头的为输入行，已「<」开头的为输出行，其余为注解
+//注解，以下以 「>」开头的为输入行，已「<」开头的为输出行，其余为注解;
+//AT 命令测试
 >AT
-
 <OK
+
+//切换为STATION模式
 >AT+CWMODE=1
-
 <OK
+
 //请配置为正确的SSID与密码，并能连入网络。
 >AT+CWJAP="OUR_SSID","PWD_SSID"
-
 <OK
+
+//查询网络连接状态
 >AT+CIPSTA?
 <+CIPSTA:"192.168.0.102"
-
 <OK
+
+//查看推送状态
 >AT+PUSH?
 <3
-
 <OK
+
 //以下请替换为你自己添加的APPID与APPKEY
 >AT+PUSH=APPID,APPKEY
-
 <OK
+
 //若过较长时间仍一直返回3，则无法连接到服务器，请AT+RST后重试
 >AT+PUSH?
 <2
-
 <OK
 
+//收到来自远端的数据。
 +MSG,20:HELLO，FROM PUSHMSG.
 ```
+- 在平台[在线设备](http://211.155.86.145:8000/web/devices/)、[数据推送](http://211.155.86.145:8000/web/pushmsg/)等处，均可向设备发送指令，指令将从串口传出。
 
-
-如果您只是将ESP8266芯片用作您的网络用途，那AT固件是您最好的选择，点击此处下载ES-PUSH的AT固件，并按下图所示刷入您的设备中。
-
+#AT指令说明
 AT-PUSH固件新增了3个命令，以下做简要说明
 - AT+PUSH，使用AT+PUSH?可查询当前连接状态，返回值定义为：
 ```
@@ -53,5 +67,5 @@ DISCONNECTED = 3
 
 - AT+UNPUSH，使用此命令断开与服务器的连接，断开后服务端也将无法推送数据到终端。返回OK。
 - +MSG，收到数据后，模块将向串口写入以下数据，数据已`+MSG %d:`开头，其中%d为
-
+- 稍后将推出远程AT命令执行的功能。
 
