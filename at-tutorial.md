@@ -1,6 +1,6 @@
 #使用AT固件
 - 注册平台账号，前往[此处](http://211.155.86.145:8000/web/register/)注册账号并登入，点击“[设备类别](http://211.155.86.145:8000/web/apps/)”，并新增一个APP，记录新APP的APPID与APPKEY，稍后使用。
-- 按如下步骤，下载AT固件，自己编译或使用预编译的版本，并刷入板子
+- 按如下步骤，下载AT固件，自己编译或使用预编译的版本，并刷入板子。固件刷入工具最好使用乐鑫推荐的[Flash Download Tool](http://bbs.espressif.com/viewtopic.php?f=5&t=433)。
 
 ```
 #使用以下命令编译AT固件
@@ -10,7 +10,10 @@ make clean && make
 #或者直接使用bin目录下以预编译
 bin/eagle.flash.bin	0x00000
 bin/eagle.irom0text.bin	0x40000
+bin/blank.bin	0x7E000
 ```
+刷入时截图如下：
+![Alt text](./images/at_flashing.png)
 
 - 开启调试控制台，默认波特率BIT_RATE_115200，按以下方式输入指令：
 ```
@@ -37,7 +40,7 @@ bin/eagle.irom0text.bin	0x40000
 <3
 <OK
 
-//以下请替换为你自己添加的APPID与APPKEY
+//以下请替换为第一步添加的APPID与APPKEY
 >AT+PUSH=APPID,APPKEY
 <OK
 
@@ -68,4 +71,13 @@ DISCONNECTED = 3
 - AT+UNPUSH，使用此命令断开与服务器的连接，断开后服务端也将无法推送数据到终端。返回OK。
 - +MSG，收到数据后，模块将向串口写入以下数据，数据已`+MSG %d:`开头，其中%d为
 - 稍后将推出远程AT命令执行的功能。
+
+#固件编译及源码说明
+运行`git clone https://github.com/pushdotccgzs/espush_at.git`，克隆AT固件源码库，此源码fork自[乐鑫官方AT固件](http://bbs.espressif.com/viewtopic.php?f=5&t=481)，并在此基础上增加了用于推送的命令，具体可见源码`app/user/at_push.c`。执行`make`即可编译，若需要使用云端推送升级功能，需要使用大于512KB的Flash，见官方的[说明](http://bbs.espressif.com/viewtopic.php?f=5&t=481)：
+```
+AT_v0.24 Release Note:
+注意：运行 AT 固件，支持云端升级，请使用 1024KB 或以上容量的 flash
+```
+
+定制其他命令可简单在`user_main.c`中的`at_custom_cmd`数组中新增即可。
 
