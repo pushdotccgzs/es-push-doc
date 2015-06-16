@@ -40,7 +40,7 @@ bin/blank.bin	0x7E000
 <3
 <OK
 
-//以下请替换为你自己添加的APPID与APPKEY,不要引号，直接输入即可
+//以下请替换为你自己添加的APPID与APPKEY,不要引号，直接输入即可, 这里请注意是APPID，非APPNAME，数字的，第一栏的APPID
 >AT+PUSH_DEF=APPID,APPKEY
 <OK
 
