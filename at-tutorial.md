@@ -1,5 +1,5 @@
 #使用AT固件
-- 注册平台账号，前往[此处](http://211.155.86.145:8000/web/register/)注册账号并登入，点击“[设备类别](http://211.155.86.145:8000/web/apps/)”，并新增一个APP，记录新APP的APPID与APPKEY，稍后使用。
+- 注册平台账号，前往[此处](https://espush.cn/web/register/)注册账号并登入，点击“[设备类别](https://espush.cn/web/apps/)”，并新增一个APP，记录新APP的APPID与APPKEY，稍后使用。
 - 按如下步骤，下载AT固件，自己编译或使用预编译的版本，并刷入板子。固件刷入工具最好使用乐鑫推荐的[Flash Download Tool](http://bbs.espressif.com/viewtopic.php?f=5&t=433)。
 
 ```
@@ -52,7 +52,7 @@ bin/blank.bin	0x7E000
 //收到来自远端的数据。
 +MSG,20:HELLO，FROM PUSHMSG.
 ```
-- 在平台[在线设备](http://211.155.86.145:8000/web/devices/)、[数据推送](http://211.155.86.145:8000/web/pushmsg/)等处，均可向设备发送指令，指令将从串口传出。
+- 在平台[在线设备](https://espush.cn/web/devices/)、[数据推送](https://espush.cn/web/pushmsg/)等处，均可向设备发送指令，指令将从串口传出。
 
 #AT指令说明
 AT-PUSH固件新增了3个命令，以下做简要说明
@@ -74,7 +74,30 @@ DISCONNECTED = 3
 
 - AT+UNPUSH，使用此命令断开与服务器的连接，断开后服务端也将无法推送数据到终端。返回OK。
 - +MSG，收到数据后，模块将向串口写入以下数据，数据已`+MSG %d:`开头，其中%d为
-- 稍后将推出远程AT命令执行的功能。
+- AT+GPIO_LOW=N ，使用此指令控制指定GPIO口的低电平，可远程使用此命令。
+- AT+GPIO_HIGH=N，同上，使用此命令控制GPIO口的高电平，可远程使用。可控制的GPIO口参考如下：
+```C
+//0 ~ 5
+{0, FUNC_GPIO0, PERIPHS_IO_MUX_GPIO0_U},
+{1, FUNC_GPIO1, PERIPHS_IO_MUX_U0TXD_U},  //串口tx口，请不要使用
+{2, FUNC_GPIO2, PERIPHS_IO_MUX_GPIO2_U},
+{3, FUNC_GPIO3, PERIPHS_IO_MUX_U0RXD_U},  //串口RX口，请不要使用
+{4, FUNC_GPIO4, PERIPHS_IO_MUX_GPIO4_U},
+{5, FUNC_GPIO5, PERIPHS_IO_MUX_GPIO5_U},
+//9 ~ 10
+{9, FUNC_GPIO9, PERIPHS_IO_MUX_SD_DATA2_U},
+{10, FUNC_GPIO10, PERIPHS_IO_MUX_SD_DATA3_U},
+//12~15
+{12, FUNC_GPIO12, PERIPHS_IO_MUX_MTDI_U},
+{13, FUNC_GPIO13, PERIPHS_IO_MUX_MTCK_U},
+{14, FUNC_GPIO14, PERIPHS_IO_MUX_MTMS_U},
+{15, FUNC_GPIO15, PERIPHS_IO_MUX_MTDO_U},
+```
+
+使用范例及方式见下图
+![Alt text](./docs/images/remote_at.png)
+
+![Alt text](./docs/images/push_at.png)
 
 #固件编译及源码说明
 运行`git clone https://github.com/pushdotccgzs/espush_at.git`，克隆AT固件源码库，此源码fork自[乐鑫官方AT固件](http://bbs.espressif.com/viewtopic.php?f=5&t=481)，并在此基础上增加了用于推送的命令，具体可见源码`app/user/at_push.c`。执行`make`即可编译，若需要使用云端推送升级功能，需要使用大于512KB的Flash，见官方的[说明](http://bbs.espressif.com/viewtopic.php?f=5&t=481)：
