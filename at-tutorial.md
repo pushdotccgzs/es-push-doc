@@ -2,7 +2,7 @@
 - 注册平台账号，前往[此处](https://espush.cn/web/register/)注册账号并登入，点击“[设备类别](https://espush.cn/web/apps/)”，并新增一个APP，记录新APP的APPID与APPKEY，稍后使用。
 - 按如下步骤，下载AT固件，自己编译或使用预编译的版本，并刷入板子。固件刷入工具最好使用乐鑫推荐的[Flash Download Tool](http://bbs.espressif.com/viewtopic.php?f=5&t=433)。
 
-```
+```shell
 #使用以下命令编译AT固件
 git clone https://github.com/pushdotccgzs/espush_at.git
 cd espush_at
@@ -12,6 +12,7 @@ bin/eagle.flash.bin	0x00000
 bin/eagle.irom0text.bin	0x40000
 bin/blank.bin	0x7E000
 ```
+
 刷入时截图如下：
 ![Alt text](./docs/images/at_flashing.png)
 
